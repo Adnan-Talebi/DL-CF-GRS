@@ -12,12 +12,13 @@ parser.add_argument('--modelFile', type=str, required=True, help="Model file")
 parser.add_argument('--seed', type=str, required=True, help="Seed")
 parser.add_argument('--k', type=int, required=True, help="Number of factor in each embedding")
 parser.add_argument('--dataset', type=str, required=True, help="Dataset")
+parser.add_argument('--group_size', type=int, required=True, help="group_size")
 
 args = parser.parse_args()
 
 
 BATCH=64
-EPOCH=25
+EPOCH=1000
 steps_per_epoch = None
 
 # NETFLIX
@@ -26,10 +27,6 @@ steps_per_epoch = None
 
 # Seed inizialization
 init_random(args.seed)
-
-
-
-
 
 # Dataset load
 from data_utils import dynamic_import
@@ -43,8 +40,7 @@ dataset = DynamicClass()
 outputdir=args.outdir+"/"+dataset.get_data_code()
 
 
-fromngroups=4
-tongroups=4
+
 
 
 # Model creation
@@ -52,33 +48,67 @@ import tensorflow as tf
 import tensorflow.keras as keras
 import tensorflow.keras.layers as layers
 import numpy as np
-from src.models.models import get_model_list, get_model, store_model, mlp_agg
+from src.models.models import get_model_list, get_model, store_model, mlp_agg, mlp_agg_dense
 
 
-for i, group_size in enumerate(range(fromngroups,tongroups+1)):
+group_size = args.group_size
 
-    train_secuencer = dataset.get_group_train(group_size, BATCH)
+
+train_secuencer = dataset.get_group_train(group_size, BATCH)
+val_secuencer = dataset.get_group_val(group_size, BATCH)
+callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3)
+
+individual_model = keras.models.load_model(args.modelFile)
+individual_model.trainable = False
+
+model_agg = mlp_agg(individual_model, args.k, dataset, args.seed)
+model_agg._name = model_agg._name + '_'+str(group_size)
+
+model_agg.summary()
+model_agg.compile(
+    loss=tf.keras.losses.MeanAbsoluteError(),
+    optimizer=keras.optimizers.Adam(lr=0.001)
+)
+
+history = model_agg.fit(
+    train_secuencer,
+    validation_data=val_secuencer,
+    epochs=EPOCH,
+    verbose=1,
+    callbacks=[callback],
+    steps_per_epoch=steps_per_epoch,
+)
+
+
+model_agg_dense = mlp_agg_dense(individual_model, args.k, dataset, args.seed)
+model_agg_dense._name = model_agg_dense._name + '_'+str(group_size)
+
+model_agg_dense.summary()
+model_agg_dense.compile(
+    loss=tf.keras.losses.MeanAbsoluteError(),
+    optimizer=keras.optimizers.Adam(lr=0.001)
+)
+
+history = model_agg_dense.fit(
+    train_secuencer,
+    validation_data=val_secuencer,
+    epochs=EPOCH,
+    verbose=1,
+    callbacks=[callback],
+    steps_per_epoch=steps_per_epoch,
+)
+
+
+test_secuencer = dataset.get_group_test(group_size, BATCH)
+
+print("MLP as AGG MultiHot")
+results = model_agg.evaluate(test_secuencer)
+store_model(model_agg, history, results, outputdir)
+
+print("MLP as AGG Dense")
+results = model_agg_dense.evaluate(test_secuencer)
+store_model(model_agg_dense, history, results, outputdir)
+
+print("MLP individual")
+individualmodel_results = individual_model.evaluate(test_secuencer)
     
-    individual_model = keras.models.load_model(args.modelFile)
-    model = mlp_agg(individual_model, args.k, dataset, args.seed)
-    
-    model.summary()
-    model.compile(
-        loss=tf.keras.losses.MeanAbsoluteError(),
-        optimizer=keras.optimizers.Adam(lr=0.001)
-    )
-
-    history = model.fit(
-        train_secuencer,
-        validation_data=None,
-        epochs=EPOCH,
-        verbose=1,
-        steps_per_epoch=steps_per_epoch,
-    )
-
-    test_secuencer = dataset.get_group_test(group_size, BATCH)
-    
-    results = model.evaluate(test_secuencer)
-    individualmodel_results = individual_model.evaluate(test_secuencer)
-    
-    store_model(model, history, results, outputdir)
