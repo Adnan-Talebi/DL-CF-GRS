@@ -15,8 +15,12 @@ parser.add_argument('--dataset', type=str, required=True, help="Dataset")
 
 args = parser.parse_args()
 
+from src.utils.agg_functions import agg_list
+aggs = agg_list()
+
 fromngroups=2
 tongroups=10
 
 for i, group_size in enumerate(range(fromngroups,tongroups+1)):
-    os.system(f"python src/train/group-train.py  --outdir {args.outdir} --model {args.modelFile} --seed {args.seed} --k {args.k} --dataset {args.dataset} --g {group_size}")
+    for agg in aggs:
+        os.system(f"python src/train/group-train.py  --outdir {args.outdir} --model {args.modelFile} --seed {args.seed} --k {args.k} --dataset {args.dataset} --g {group_size} --agg {agg}")

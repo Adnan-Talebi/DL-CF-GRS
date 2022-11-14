@@ -22,23 +22,24 @@ class GroupData(ReadTestMixin, ReadTrainMixin, ShuffleMixin, SplitValMixin, GetM
     def get_shape(self):
         return (self.get_num_users() + self.get_num_items(),) # OneHot Dense as Embedding
     
-    def __get_generator(self, group_size, batch_size, path):
+    def __get_generator(self, group_size, batch_size, path, agg_function):
         return MultiHotGenerator(
                     group_size,
                     path,
                     self.get_num_users(),
                     self.get_num_items(),
-                    batch_size
+                    batch_size,
+                    agg_function
                 )
         
-    def get_group_train(self, group_size, batch_size):
-        return self.__get_generator(group_size, batch_size, DATA_ROOT+"/grupos/" + self.get_data_code() + "/groups-"+str(group_size)+"-train.csv")
+    def get_group_train(self, group_size, batch_size, agg_function):
+        return self.__get_generator(group_size, batch_size, DATA_ROOT+"/grupos/" + self.get_data_code() + "/groups-"+str(group_size)+"-train.csv", agg_function)
     
-    def get_group_val(self, group_size, batch_size):
-        return self.__get_generator(group_size, batch_size, DATA_ROOT+"/grupos/" + self.get_data_code() + "/groups-"+str(group_size)+"-val.csv")
+    def get_group_val(self, group_size, batch_size, agg_function):
+        return self.__get_generator(group_size, batch_size, DATA_ROOT+"/grupos/" + self.get_data_code() + "/groups-"+str(group_size)+"-val.csv", agg_function)
     
-    def get_group_test(self, group_size, batch_size):
-        return self.__get_generator(group_size, batch_size, DATA_ROOT+"/grupos/" + self.get_data_code() + "/groups-"+str(group_size)+"-test.csv")
+    def get_group_test(self, group_size, batch_size, agg_function):
+        return self.__get_generator(group_size, batch_size, DATA_ROOT+"/grupos/" + self.get_data_code() + "/groups-"+str(group_size)+"-test.csv", agg_function)
     
     def get_group_test_as_individuals(self, group_size, batch_size):
         return OneHotGeneratorAsIndividual(

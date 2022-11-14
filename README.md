@@ -29,6 +29,10 @@ export PYTHONPATH
 >>> from src.data.data import generate_groups('ml1m')
 ```
 
+```
+python -c "from src.data.data import generate_groups; generate_groups('ml100k')"
+```
+
 #### Split Test-Train
 
 ```
@@ -68,3 +72,8 @@ Tamaño de lote divisor de la muestra
 Probar entrenar: MAX, MIN, MEAN, MEDIAN
 
 
+Meter la moda.
+Meter NCF y GMF con softmax
+Sacar info de GMF, NCF con variaciones
+Elegir mejor GMF y NCF
+Pintar STD

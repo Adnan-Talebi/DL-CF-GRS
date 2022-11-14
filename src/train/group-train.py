@@ -13,6 +13,7 @@ parser.add_argument('--seed', type=str, required=True, help="Seed")
 parser.add_argument('--k', type=int, required=True, help="Number of factor in each embedding")
 parser.add_argument('--dataset', type=str, required=True, help="Dataset")
 parser.add_argument('--group_size', type=int, required=True, help="group_size")
+parser.add_argument('--agg', type=str, required=True, help="Agg function")
 
 args = parser.parse_args()
 
@@ -53,16 +54,19 @@ from src.models.models import get_model_list, get_model, store_model, mlp_agg, m
 
 group_size = args.group_size
 
+from src.utils.agg_functions import get_agg_function
+agg_function = get_agg_function(args.agg)
 
-train_secuencer = dataset.get_group_train(group_size, BATCH)
-val_secuencer = dataset.get_group_val(group_size, BATCH)
+train_secuencer = dataset.get_group_train(group_size, BATCH, agg_function)
+val_secuencer = dataset.get_group_val(group_size, BATCH, agg_function)
+
 callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3)
 
 individual_model = keras.models.load_model(args.modelFile)
 individual_model.trainable = False
 
 model_agg = mlp_agg(individual_model, args.k, dataset, args.seed)
-model_agg._name = model_agg._name + '_'+str(group_size)
+model_agg._name = model_agg._name + '_' + str(group_size) + '_' + args.agg
 
 model_agg.summary()
 model_agg.compile(
@@ -79,9 +83,8 @@ history = model_agg.fit(
     steps_per_epoch=steps_per_epoch,
 )
 
-
 model_agg_dense = mlp_agg_dense(individual_model, args.k, dataset, args.seed)
-model_agg_dense._name = model_agg_dense._name + '_'+str(group_size)
+model_agg_dense._name = model_agg_dense._name + '_' + str(group_size) + '_' + args.agg
 
 model_agg_dense.summary()
 model_agg_dense.compile(
@@ -99,7 +102,7 @@ history = model_agg_dense.fit(
 )
 
 
-test_secuencer = dataset.get_group_test(group_size, BATCH)
+test_secuencer = dataset.get_group_test(group_size, BATCH, agg_function)
 
 print("MLP as AGG MultiHot")
 results = model_agg.evaluate(test_secuencer)

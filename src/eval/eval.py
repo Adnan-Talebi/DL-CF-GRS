@@ -73,60 +73,63 @@ individual_model = keras.models.load_model(args.modelFile)
 
 outdir = outputdir
 
+from src.utils.agg_functions import agg_list
+aggs = agg_list()
+
 for i, group_size in enumerate(range(fromngroups,tongroups+1)):
-    
-    """
-        Datasets
-    """
-    test_secuencer_as_individuals = dataset.get_group_test_as_individuals(group_size, BATCH)
-    test_secuencer = dataset.get_group_test(group_size, BATCH)
-    
-    """
-        Agg in MLP model
-    """
-    base_name = args.modelFile.split(".")[0] # remove extension
-    pathtomodel = base_name.split('/')       # a / b / c
-    modelname = pathtomodel.pop()            # a,b    c
-    pathtomodel = "/".join(pathtomodel)      # a / b
-    
-    group_model = keras.models.load_model(pathtomodel+"/mlp_agg_"+modelname+"_"+str(group_size)+".h5")
-    group_model_dense = keras.models.load_model(pathtomodel+"/mlp_agg_dense_"+modelname+"_"+str(group_size)+".h5")
-    
-    
-    """
-        Mean of individuals prediction
-    """
-    y_pred = individual_model.predict(test_secuencer_as_individuals)
-    y_pred = y_pred.reshape((-1, group_size))
-    y_pred = np.mean(y_pred, axis=1)
-    y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
-    y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
-    # [[predict_rating1, predict_rating2, ..., predict_ratingn], [predict_rating1, ...] ... ]
-    write_file(outdir, group_size, 'mlp_individual_mean', y_pred, index=False)
-    
-    y_pred = group_model.predict(test_secuencer_as_individuals)
-    y_pred = y_pred.reshape((-1, group_size))
-    y_pred = np.mean(y_pred, axis=1)
-    y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
-    y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
-    # [[predict_rating1, predict_rating2, ..., predict_ratingn], [predict_rating1, ...] ... ]
-    write_file(outdir, group_size, 'agg_mlp_individual_mean', y_pred, index=False)
-    
-    
-    """
-        MultiHot
-    """
-    y_pred = individual_model.predict(test_secuencer)
-    y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
-    y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
-    write_file(outdir, group_size, "mlp_mo", y_pred)
-    
-    y_pred = group_model.predict(test_secuencer)
-    y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
-    y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
-    write_file(outdir, group_size, "agg_mlp_mo", y_pred)
-    
-    y_pred = group_model_dense.predict(test_secuencer)
-    y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
-    y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
-    write_file(outdir, group_size, "agg_mlp_dense_mo", y_pred)
+    for agg in aggs:
+        """
+            Datasets
+        """
+        test_secuencer_as_individuals = dataset.get_group_test_as_individuals(group_size, BATCH)
+        test_secuencer = dataset.get_group_test(group_size, BATCH, agg)
+        
+        """
+            Agg in MLP model
+        """
+        base_name = args.modelFile.split(".")[0] # remove extension
+        pathtomodel = base_name.split('/')       # a / b / c
+        modelname = pathtomodel.pop()            # a,b    c
+        pathtomodel = "/".join(pathtomodel)      # a / b
+        
+        group_model = keras.models.load_model(pathtomodel+"/mlp_agg_"+modelname+"_"+str(group_size)+"_"+agg+".h5")
+        group_model_dense = keras.models.load_model(pathtomodel+"/mlp_agg_dense_"+modelname+"_"+str(group_size)+"_"+agg+".h5")
+        
+        
+        """
+            Mean of individuals prediction
+        
+        y_pred = individual_model.predict(test_secuencer_as_individuals)
+        y_pred = y_pred.reshape((-1, group_size))
+        y_pred = np.mean(y_pred, axis=1)
+        y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
+        y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
+        # [[predict_rating1, predict_rating2, ..., predict_ratingn], [predict_rating1, ...] ... ]
+        write_file(outdir, group_size, 'mlp_individual_mean'+"_"+agg, y_pred, index=False)
+        
+        y_pred = group_model.predict(test_secuencer_as_individuals)
+        y_pred = y_pred.reshape((-1, group_size))
+        y_pred = np.mean(y_pred, axis=1)
+        y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
+        y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
+        # [[predict_rating1, predict_rating2, ..., predict_ratingn], [predict_rating1, ...] ... ]
+        write_file(outdir, group_size, 'agg_mlp_individual_mean'+"_"+agg, y_pred, index=False)
+        """
+        
+        """
+            MultiHot
+        """
+        y_pred = individual_model.predict(test_secuencer)
+        y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
+        y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
+        write_file(outdir, group_size, "mlp_mo"+"_"+agg, y_pred)
+        
+        y_pred = group_model.predict(test_secuencer)
+        y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
+        y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
+        write_file(outdir, group_size, "agg_mlp_mo"+"_"+agg, y_pred)
+        
+        y_pred = group_model_dense.predict(test_secuencer)
+        y_pred[y_pred>dataset.get_rating_max()]=dataset.get_rating_max()
+        y_pred[y_pred<dataset.get_rating_min()]=dataset.get_rating_min()
+        write_file(outdir, group_size, "agg_mlp_dense_mo"+"_"+agg, y_pred)
