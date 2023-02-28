@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 
 def agg_list():
-    """
     return [
         'min',
         'max',
@@ -17,6 +16,7 @@ def agg_list():
     return [
         'mean',
     ]
+    """
 
 
 def get_agg_function(fname):

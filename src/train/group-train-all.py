@@ -13,6 +13,7 @@ parser.add_argument('--seed', type=str, required=True, help="Seed")
 parser.add_argument('--k', type=int, required=True, help="Number of factor in each embedding")
 parser.add_argument('--dataset', type=str, required=True, help="Dataset")
 parser.add_argument('--agg', type=str, required=False, help="Agg")
+parser.add_argument('--group_size', type=int, required=False, help="group_size")
 
 args = parser.parse_args()
 
@@ -23,8 +24,12 @@ if(args.agg!="" and args.agg!=None):
     print("Concrete aggregation" + args.agg)
     aggs = [args.agg]
 
-fromngroups=2
-tongroups=10
+if args.group_size:
+    fromngroups=args.group_size
+    tongroups=args.group_size
+else:
+    fromngroups=2
+    tongroups=10
 
 for i, group_size in enumerate(range(fromngroups,tongroups+1)):
     for agg in aggs:

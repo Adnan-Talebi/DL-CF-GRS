@@ -19,6 +19,7 @@ args = parser.parse_args()
 
 BATCH=64
 EPOCH=1000
+EARLYSTOPPING=10#Before anime 3
 steps_per_epoch = None
 
 # NETFLIX
@@ -66,7 +67,7 @@ model.compile(
     optimizer=keras.optimizers.Adam(lr=0.001)
 )
 
-callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3)
+callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=EARLYSTOPPING)
 
 history = model.fit(
     train_secuencer,

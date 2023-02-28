@@ -20,6 +20,7 @@ args = parser.parse_args()
 
 BATCH=64
 EPOCH=1000
+EARLYSTOPPING=10#Before anime 3
 steps_per_epoch = None
 
 # NETFLIX
@@ -60,7 +61,7 @@ agg_function = get_agg_function(args.agg)
 train_secuencer = dataset.get_group_train(group_size, BATCH, agg_function, 1.0)
 val_secuencer = dataset.get_group_val(group_size, BATCH, agg_function, 1.0)
 
-callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3)
+callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=EARLYSTOPPING)
 
 individual_model = keras.models.load_model(args.modelFile)
 individual_model.trainable = False

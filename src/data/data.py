@@ -85,9 +85,14 @@ def generate_group(data, data_code, group_size):
 """
     Recive a dataset from rs-data-python
 """
-def generate_groups(data_code):
-    fromngroups=2
-    tongroups=10
+def generate_groups(data_code, group_size=None):
+    if group_size == None:
+        fromngroups=2
+        tongroups=10
+    else:
+        fromngroups=group_size
+        tongroups=group_size
+    
     for i, group_size in enumerate(range(fromngroups,tongroups+1)):         
         data = pd.read_csv(
                 DATA_ROOT+"/grupos/" + data_code + "/test-ratings.csv",
@@ -103,6 +108,12 @@ class GroupDataML1M(GroupData):
     code = "ml1m"
 
 
+class GroupDataML100K(GroupData):
+    test_url = "/grupos/ml100k/test-ratings.csv"
+    train_url = "/grupos/ml100k/training-ratings.csv"
+    code = "ml100k"
+
+
 class GroupDataFT(GroupData):
     test_url = "/grupos/ft/test-ratings.csv"
     train_url = "/grupos/ft/training-ratings.csv"
@@ -114,6 +125,11 @@ class GroupDataANIME(GroupData):
     train_url = "/grupos/anime/training-ratings.csv"
     code = "anime"
 
+
+class GroupDataANIMEPERCENTAGE(GroupData):
+    test_url = "/grupos/animepercentage/test-ratings.csv"
+    train_url = "/grupos/animepercentage/training-ratings.csv"
+    code = "anime"
 
 class GroupDataNetflix(GroupData):
     test_url = "/grupos/netflix/test-ratings.csv"
