@@ -94,6 +94,18 @@ def mlp_agg_dense(model, k, dataset, seed):
     else:
         return mlp_agg_dense_to_mlp(model, k, dataset, seed)
 
+def mlp_for_groups(ds):
+    # MLP layers
+    # ML100K y FT -> [64, 32, 16, 8]
+    if 'ml100k' in ds.get_data_code() or 'ft' in ds.get_data_code():
+        return [2**i for i in range(6,2,-1)]
+    # ML1M -> [128, 64, 32, 16, 8]
+    if 'ml1m' in ds.get_data_code() or 'anime' in ds.get_data_code():#JDL: 2023-0329 try anime with less layers
+        return [2**i for i in range(7,2,-1)]
+    # ANIME -> [256, 128, 64, 32, 16, 8]
+    #if 'anime' in ds.get_data_code():
+    #    return [2**i for i in range(8,2,-1)]
+
 
 def mlp_agg_dense_to_mlp(model, k, dataset, seed):
     ds_shape, nuser, nitems, ds_code = dataset.get_shape(), dataset.get_num_users(), dataset.get_num_items(), dataset.get_data_code()
@@ -110,8 +122,8 @@ def mlp_agg_dense_to_mlp(model, k, dataset, seed):
     user_latent = Flatten()(e_user)
 
     vector = user_latent
-    # MLP layers
-    for idx in [256, 128, 64, 32, 16, 8]:
+
+    for idx in mlp_for_groups(dataset):
         layer = Dense(idx, kernel_regularizer= l2(regs[0]), activation='relu', name = AGG_PREFIX_D+'layer%d' %idx)
         vector = layer(vector)
     
@@ -167,7 +179,7 @@ def mlp_agg_dense_to_gmf(model, k, dataset, seed):
 
     vector = user_latent
     # MLP layers
-    for idx in [256, 128, 64, 32, 16, 8]:
+    for idx in mlp_for_groups(dataset):
         layer = Dense(idx, kernel_regularizer= l2(regs[0]), activation='relu', name = AGG_PREFIX_D+'layer%d' %idx)
         vector = layer(vector)
     

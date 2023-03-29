@@ -125,18 +125,13 @@ class GroupDataANIME(GroupData):
     train_url = "/grupos/anime/training-ratings.csv"
     code = "anime"
 
-
-class GroupDataANIMEPERCENTAGE(GroupData):
-    test_url = "/grupos/animepercentage/test-ratings.csv"
-    train_url = "/grupos/animepercentage/training-ratings.csv"
-    code = "anime"
-
 class GroupDataNetflix(GroupData):
     test_url = "/grupos/netflix/test-ratings.csv"
     train_url = "/grupos/netflix/training-ratings.csv"
     code = "netflix"
 
-
+"""
+Not used function
 def code_to_py(code):
     if code == 'ft':
         return 'src.data.data.GroupDataFT'
@@ -144,3 +139,4 @@ def code_to_py(code):
         return 'src.data.data.GroupDataML1M'
     if code == 'anime':
         return 'src.data.data.GroupDataANIME'
+"""

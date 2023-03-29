@@ -18,6 +18,8 @@ def agg_list():
     ]
     """
 
+    
+
 
 def get_agg_function(fname):
     assoc = {

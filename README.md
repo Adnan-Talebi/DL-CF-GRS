@@ -1,7 +1,9 @@
 # dl-cf-groups-deep-aggregation
 dl-cf-groups-deep-aggregation
 
-## Data
+## Data library
+
+This project use an external library.
 
 ```
 PYTHONPATH="/workspace/rs-data-python:."
@@ -33,11 +35,14 @@ export PYTHONPATH
 
 ### Group generation
 
+In the function ```generate_group``` the first argument is mandatory and is the code of the dataset. The second is optional and indicates the group size (Usefull for big datasets like Anime).
+
 ```python
 python -c "from src.data.data import generate_groups; generate_groups('ml100k')"
 ```
 
-Set seed
+It is important to set the random seed in order to reproduce the experiments. All group data has been generated with the default random_seed (value 37 see: rs-data-python/data_utlis.py).
+
 ```python
 python -c "
 from data_utils import init_random;
@@ -69,6 +74,7 @@ python src/train/individual-train.py  --outdir 'experiments' --model gmf --seed 
 
 ```
 python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/ft/mlp_k8_dsft_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataFT'
+python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/ml1m/mlp_k8_dsml1m_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataML100K'
 python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/ml1m/mlp_k8_dsml1m_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataML1M'
 python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/anime/mlp_k8_dsanime_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataANIME'
 ```
@@ -143,21 +149,18 @@ Con bobi Anime tenía más error en los grupos centrales, viendo FT son fluctuac
 
 
 
-Sacar info de GMF, NCF con variaciones
+(x) Sacar info de GMF, NCF con variaciones
+(x) Pintar STD
+(x) Meter MLP y GMF con softmax
+(x) ML1M
+(x) MLP-Evaluado y entrenado
+(x) Entrenando GMF
+(x) Entrenando a Anime de nuevo con MLP y GMF para individuos.
+
 Elegir mejor GMF y NCF
-Pintar STD
-Meter MLP y GMF con softmax
-ML1M
-MLP-Evaluado y entrenado
-Entrenando GMF
-
-
-# TODO
-Entrenando a Anime de nuevo con MLP y GMF para individuos.
-
 
 # Gráficas
-TODO: Revisar el estado de los puntos anteriores.
+
 
 - Ejecución de todas las agregaciones
 - Hacer column-boxplot teniendo la misma escala.
