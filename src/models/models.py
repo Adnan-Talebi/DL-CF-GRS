@@ -100,10 +100,10 @@ def mlp_for_groups(ds):
     if 'ml100k' in ds.get_data_code() or 'ft' in ds.get_data_code():
         return [2**i for i in range(6,2,-1)]
     # ML1M -> [128, 64, 32, 16, 8]
-    if 'ml1m' in ds.get_data_code() or 'anime' in ds.get_data_code():#JDL: 2023-0329 try anime with less layers
+    if 'ml1m' in ds.get_data_code():# or 'anime' in ds.get_data_code():#JDL: 2023-0329 try anime with smaller mlp. Same results for MLP-GMF, use 256..8 MLP
         return [2**i for i in range(7,2,-1)]
     # ANIME -> [256, 128, 64, 32, 16, 8]
-    #if 'anime' in ds.get_data_code():
+    if 'anime' in ds.get_data_code():
     #    return [2**i for i in range(8,2,-1)]
 
 
