@@ -20,7 +20,7 @@ args = parser.parse_args()
 
 BATCH=64
 EPOCH=1000
-EARLYSTOPPING=10#Before anime 3
+EARLYSTOPPING=10 #Before anime 3
 steps_per_epoch = None
 
 # NETFLIX

@@ -104,7 +104,7 @@ def mlp_for_groups(ds):
         return [2**i for i in range(7,2,-1)]
     # ANIME -> [256, 128, 64, 32, 16, 8]
     if 'anime' in ds.get_data_code():
-    #    return [2**i for i in range(8,2,-1)]
+        return [2**i for i in range(8,2,-1)]
 
 
 def mlp_agg_dense_to_mlp(model, k, dataset, seed):
