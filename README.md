@@ -1,5 +1,6 @@
-# dl-cf-groups-deep-aggregation
-dl-cf-groups-deep-aggregation
+# Deep Neural Aggregation for Recommending Items to Group of Users 
+
+This repository contains the source code of the experiments run for a paper titled "*Deep Neural Aggregation for Recommending Items to a Group of Users*". This work has been submitted to the Information Sciences journal (ref. INS-D-23-4969) and is currently under review. You can read its preprint on arXiv.: [https://arxiv.org/abs/2307.09447](https://arxiv.org/abs/2307.09447).
 
 ## Data library
 
