@@ -2,16 +2,22 @@
 
 This repository contains the source code of the experiments run for a paper titled "*Deep Neural Aggregation for Recommending Items to a Group of Users*". This work has been submitted to the Information Sciences journal (ref. INS-D-23-4969) and is currently under review. You can read its preprint on arXiv.: [https://arxiv.org/abs/2307.09447](https://arxiv.org/abs/2307.09447).
 
-## Data library
+## python RS data library
 
-This project use an external library.
+This project use a library that manage all preprocessing for recommender system datasets. It has not been plubished as a python package yet, so it is included in this repository. You can added it to your path:
 
 ```
 PYTHONPATH="/workspace/rs-data-python:."
 export PYTHONPATH
 ```
 
+### Datasets
+
+All experiments use the datasets from the java library [CF4J](https://cf4j.etsisi.upm.es/)
+
 ## Project Layout
+
+This is the project layout with an explanation about what you can find in each directory.
 
 ```txt
 - data
@@ -32,7 +38,22 @@ export PYTHONPATH
   \- utils
 ```
 
-## Execution example
+## Execution of experiments
+
+All scripts and code has a seed initialization, you can reproduce this experiment results doing the folling tasks:
+
+1.- Clone the repository
+2.- Setup the python path for datasets
+3.- Download the datasets
+4.- Generate the synthetyc groups
+5.- Split groups in train/val/test
+6.- Train the individual models
+7.- Train the group models
+8.- Eval the trained models
+
+When you have generated the results you can generate the graphics with the scripts in the ```notebooks``` folder.
+
+
 
 ### Group generation
 
@@ -75,12 +96,12 @@ python src/train/individual-train.py  --outdir 'experiments' --model gmf --seed 
 
 ```
 python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/ft/mlp_k8_dsft_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataFT'
-python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/ml1m/mlp_k8_dsml1m_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataML100K'
+python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/ml100k/mlp_k8_dsml100k_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataML100K'
 python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/ml1m/mlp_k8_dsml1m_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataML1M'
 python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/anime/mlp_k8_dsanime_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupDataANIME'
 ```
 
-Train generic
+Train with bash variables
 ```
 data="ml1m";model="mlp"
 data=${data:l}
@@ -88,7 +109,7 @@ data_upper=${data:u}
 python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/'$data'/'$model'_k8_ds'$data'_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupData'$data_upper
 ```
 
-Train generic group size
+Train with bash variables including group size
 ```
 data="ml1m";model="mlp";group_size=2
 data=${data:l}
@@ -96,7 +117,7 @@ data_upper=${data:u}
 python src/train/group-train-all.py  --outdir 'experiments' --model 'experiments/'$data'/'$model'_k8_ds'$data'_seed1234.h5' --seed 1234 --k 8 --dataset 'src.data.data.GroupData'$data_upper --group_size $group_size
 ```
 
-Train specific group size, agg function
+Train with bash variables, group size, agg function
 ```
 data="anime";model="gmf";group_size=2;agg="mode"
 data=${data:l}
@@ -113,7 +134,7 @@ python src/eval/eval.py  --outdir 'results' --modelFile 'experiments/ml1m/mlp_k8
 python src/eval/eval.py  --outdir 'results' --modelFile 'experiments/anime/mlp_k8_dsanime_seed1234.h5' --modelName mlp --seed 1234 --k 8 --dataset 'src.data.data.GroupDataANIME'
 ```
 
-Only Eval
+Eval with bash variables
 ```
 data="ml1m";model="mlp"
 data=${data:l}
@@ -130,7 +151,7 @@ zsh src/runner.sh anime mlp|gmf
 ```
 
 
-## Previous results
+## Previous results and discarded ideas
 
 **Discarded** Generate a multihot vector representing the group's users and feed it to the individual model. Better performance by generating the group in the latent space (connecting it to the dense layer of the individual model). Group representation as classic Multihot vector works in some datasets, like FT with low number of users but no work at all for Anime. ![MINMAX](discarded/agg-as-dense.png)
 
@@ -140,16 +161,15 @@ zsh src/runner.sh anime mlp|gmf
 Con bobi Anime tenía más error en los grupos centrales, viendo FT son fluctuaciones que ocurren en otros datasets.
 
 
-## Tareas
+## Useful dev info
+
+### Tareas
 
 (x) Aumentar tamaño de grupos. Mantener grupos generados de test.
 (x) Pegar salida a embedding del modelo individual
 (x) Generar Test-Train y usar validation
 (x) Poner early stop y aumentar el número de EPOCHs
 (x) Probar entrenar: MAX, MIN, MEAN, MEDIAN, MODA
-
-
-
 (x) Sacar info de GMF, NCF con variaciones
 (x) Pintar STD
 (x) Meter MLP y GMF con softmax
@@ -160,12 +180,10 @@ Con bobi Anime tenía más error en los grupos centrales, viendo FT son fluctuac
 
 Elegir mejor GMF y NCF
 
-# Gráficas
-
+### Gráficas
 
 - Ejecución de todas las agregaciones
 - Hacer column-boxplot teniendo la misma escala.
-
 
 Figura1
 Para cada modelo (GMF-MLP)
@@ -175,24 +193,6 @@ Dos métricas MAE y MSE
 
 GMF
 
-
-
 https://stackoverflow.com/questions/45875143/seaborn-making-barplot-by-group-with-asymmetrical-custom-error-bars
 https://stackoverflow.com/questions/35978727/how-add-asymmetric-errorbars-to-pandas-grouped-barplot
 https://stackoverflow.com/questions/23000418/adding-error-bars-to-grouped-bar-plot-in-pandas
-
-
-
-mae-mse
-fig1 (mae) gmf min,max
-fig2 (mae) mlp min, max, median..
-fig1* mse
-fig2* mse
-
-mae
-fig3 modelos
-
-mse
-fig4 modelos 
-
-
