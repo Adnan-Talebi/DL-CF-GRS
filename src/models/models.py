@@ -123,8 +123,13 @@ def mlp_agg_dense_to_mlp(model, k, dataset, seed):
 
     vector = user_latent
 
-    for idx in mlp_for_groups(dataset):
-        layer = Dense(idx, kernel_regularizer= l2(regs[0]), activation='relu', name = AGG_PREFIX_D+'layer%d' %idx)
+    # MLP layers
+    layer_list = mlp_for_groups(dataset)
+    last_layer = layer_list[-1]
+    for idx in layer_list:
+        # NOTE: last layer neurons output could be negative numbers
+        activation_function = None if last_layer == idx else 'relu'
+        layer = Dense(idx, kernel_regularizer= l2(regs[0]), activation=activation_function, name = AGG_PREFIX_D+'layer%d' %idx)
         vector = layer(vector)
     
     # Connect to dense instead of go wide to narrow again
@@ -179,8 +184,12 @@ def mlp_agg_dense_to_gmf(model, k, dataset, seed):
 
     vector = user_latent
     # MLP layers
-    for idx in mlp_for_groups(dataset):
-        layer = Dense(idx, kernel_regularizer= l2(regs[0]), activation='relu', name = AGG_PREFIX_D+'layer%d' %idx)
+    layer_list = mlp_for_groups(dataset)
+    last_layer = layer_list[-1]
+    for idx in layer_list:
+        # NOTE: last layer neurons output could be negative numbers
+        activation_function = None if last_layer == idx else 'relu'
+        layer = Dense(idx, kernel_regularizer= l2(regs[0]), activation=activation_function, name = AGG_PREFIX_D+'layer%d' %idx)
         vector = layer(vector)
     
     # Connect to dense instead of go wide to narrow again

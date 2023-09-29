@@ -1,6 +1,6 @@
 # Deep Neural Aggregation for Recommending Items to Group of Users 
 
-This repository contains the source code of the experiments run for a paper titled "*Deep Neural Aggregation for Recommending Items to a Group of Users*". This work has been submitted to the Information Sciences journal (ref. INS-D-23-4969) and is currently under review. You can read its preprint on arXiv.: [https://arxiv.org/abs/2307.09447](https://arxiv.org/abs/2307.09447).
+This repository contains the source code of the experiments run for a paper titled "*Deep Neural Aggregation for Recommending Items to a Group of Users*". This work has been submitted and is currently under review. You can read its preprint on arXiv.: [https://arxiv.org/abs/2307.09447](https://arxiv.org/abs/2307.09447).
 
 ## python RS data library
 
@@ -24,9 +24,9 @@ This is the project layout with an explanation about what you can find in each d
   \- data for experiments
 - experiments
   \- artefacts produced by execution of experiments
-  \- models, data files, etc.
+  \- models h5, data files, etc
 - results
-  \- infor generated after evaluation
+  \- results generated after evaluation
 - notebooks
   \- pre and post data processing
   \- presentation of data
@@ -51,9 +51,7 @@ All scripts and code has a seed initialization, you can reproduce this experimen
 7.- Train the group models
 8.- Eval the trained models
 
-When you have generated the results you can generate the graphics with the scripts in the ```notebooks``` folder.
-
-
+When you have generated the results you can generate the graphics with the scripts in the ```notebooks``` folder. Papers final graphs are in notebook ```notebooks/results-paper```.
 
 ### Group generation
 
@@ -157,8 +155,7 @@ zsh src/runner.sh anime mlp|gmf
 
 **Discarded** Min-Max as 'Y' to train the group aggregation get worse results. ![MINMAX](discarded/min-max.png)
 
-**Note** Estoy ejecutando la evaluación de los modelos sencillos. Igual que el otro paper para ver qué hacen los grupos en anime.
-Con bobi Anime tenía más error en los grupos centrales, viendo FT son fluctuaciones que ocurren en otros datasets.
+**Note** Group representation in latent factor space can have negative values. Last layer in group MLP must be linear
 
 
 ## Useful dev info
@@ -177,22 +174,20 @@ Con bobi Anime tenía más error en los grupos centrales, viendo FT son fluctuac
 (x) MLP-Evaluado y entrenado
 (x) Entrenando GMF
 (x) Entrenando a Anime de nuevo con MLP y GMF para individuos.
-
-Elegir mejor GMF y NCF
+(x) Elegir mejor GMF y NCF
 
 ### Gráficas
 
 - Ejecución de todas las agregaciones
 - Hacer column-boxplot teniendo la misma escala.
 
-Figura1
+Figura
 Para cada modelo (GMF-MLP)
 Para cada función de agregación (min, max, mean, median, mode)
 Para cada tamaño de grupo (2-10)
 Dos métricas MAE y MSE
 
-GMF
-
+#### GMF
 https://stackoverflow.com/questions/45875143/seaborn-making-barplot-by-group-with-asymmetrical-custom-error-bars
 https://stackoverflow.com/questions/35978727/how-add-asymmetric-errorbars-to-pandas-grouped-barplot
 https://stackoverflow.com/questions/23000418/adding-error-bars-to-grouped-bar-plot-in-pandas
