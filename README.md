@@ -1,6 +1,6 @@
 # Deep Neural Aggregation for Recommending Items to Group of Users 
 
-This repository contains the source code of the experiments run for a paper titled "*Deep Neural Aggregation for Recommending Items to a Group of Users*". This work has been submitted and is currently under review. You can read its preprint on arXiv.: [https://arxiv.org/abs/2307.09447](https://arxiv.org/abs/2307.09447).
+This repository contains the source code of the experiments run for a paper titled "*Deep Neural Aggregation for Recommending Items to a Group of Users*". This work has been submitted and is currently under review. You can read its preprint on arXiv.: [https://arxiv.org/abs/2307.09447v1](https://arxiv.org/abs/2307.09447v1).
 
 ## python RS data library
 
