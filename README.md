@@ -162,19 +162,19 @@ zsh src/runner.sh anime mlp|gmf
 
 ### Tareas
 
-(x) Aumentar tamaño de grupos. Mantener grupos generados de test.
-(x) Pegar salida a embedding del modelo individual
-(x) Generar Test-Train y usar validation
-(x) Poner early stop y aumentar el número de EPOCHs
-(x) Probar entrenar: MAX, MIN, MEAN, MEDIAN, MODA
-(x) Sacar info de GMF, NCF con variaciones
-(x) Pintar STD
-(x) Meter MLP y GMF con softmax
-(x) ML1M
-(x) MLP-Evaluado y entrenado
-(x) Entrenando GMF
-(x) Entrenando a Anime de nuevo con MLP y GMF para individuos.
-(x) Elegir mejor GMF y NCF
+- (x) Aumentar tamaño de grupos. Mantener grupos generados de test.
+- (x) Pegar salida a embedding del modelo individual
+- (x) Generar Test-Train y usar validation
+- (x) Poner early stop y aumentar el número de EPOCHs
+- (x) Probar entrenar: MAX, MIN, MEAN, MEDIAN, MODA
+- (x) Sacar info de GMF, NCF con variaciones
+- (x) Pintar STD
+- (x) Meter MLP y GMF con softmax
+- (x) ML1M
+- (x) MLP-Evaluado y entrenado
+- (x) Entrenando GMF
+- (x) Entrenando a Anime de nuevo con MLP y GMF para individuos.
+- (x) Elegir mejor GMF y NCF
 
 ### Gráficas
 
@@ -188,6 +188,7 @@ Para cada tamaño de grupo (2-10)
 Dos métricas MAE y MSE
 
 #### GMF
-https://stackoverflow.com/questions/45875143/seaborn-making-barplot-by-group-with-asymmetrical-custom-error-bars
-https://stackoverflow.com/questions/35978727/how-add-asymmetric-errorbars-to-pandas-grouped-barplot
-https://stackoverflow.com/questions/23000418/adding-error-bars-to-grouped-bar-plot-in-pandas
+
+- https://stackoverflow.com/questions/45875143/seaborn-making-barplot-by-group-with-asymmetrical-custom-error-bars
+- https://stackoverflow.com/questions/35978727/how-add-asymmetric-errorbars-to-pandas-grouped-barplot
+- https://stackoverflow.com/questions/23000418/adding-error-bars-to-grouped-bar-plot-in-pandas
